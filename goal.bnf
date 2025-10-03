@@ -1,0 +1,46 @@
+goal ::= (statement | comment)*
+
+statement ::= expression? (";" | "\n")
+
+expression ::= juxtaposition
+
+juxtaposition ::= binary_expression binary_expression*
+
+binary_expression ::= unary_expression
+                   | binary_expression dyadic_verb binary_expression
+
+dyadic_verb ::= ":" | "+" | "-" | "*" | "%" | "!" | "&" | "|" | "<" | ">" | "=" | "~" | "," | "^" | "#" | "_" | "$" | "?" | "@" | "."
+
+unary_expression ::= ("~" | "-" | "+" | "::" | ":+" | ":-" | "abs") unary_expression
+                   | atom
+
+atom ::= literal
+       | symbol
+       | identifier
+       | "(" expressions ")"
+       | "{" expressions "}"
+       | "?[" expression ";" expression ";" expression "]"
+       | atom "[" expressions? "]"
+       | atom ".." identifier
+       | atom "!" expressions
+       | identifier assign_op expression
+       | identifier "(" expressions? ")"
+       | atom adverb
+
+expressions ::= expression (";" expression)*
+
+assign_op ::= ":" | "::" | "+:" | "-:" | "*:" | "/:"
+
+adverb ::= "/" | "\" | "'" | "`"
+
+literal ::= number | string | symbol
+
+number ::= /\d+(\.\d+)?/ | /0b[01]+/ | /0x[0-9a-fA-F]+/ | "0n" | "0w" | /\d+\.\d+e[-+]?\d+/
+
+string ::= /"([^"\\]|\\.)*"/ | /qq\/[^\/]*\// | /rq\/[^\/]*\//
+
+symbol ::= /`[a-zA-Z_][a-zA-Z0-9_]*/
+
+identifier ::= /[a-zA-Z_π][a-zA-Z0-9_π]*/ ("." /[a-zA-Z_][a-zA-Z0-9_]*/)*
+
+comment ::= /\/.*\n?/ | /\/[\s\S]*?\\\n/
