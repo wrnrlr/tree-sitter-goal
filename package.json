@@ -1,0 +1,52 @@
+{
+  "name": "tree-sitter-goal",
+  "version": "0.0.0",
+  "description": "Goal grammar for tree-sitter",
+  "main": "bindings/node",
+  "types": "bindings/node",
+  "keywords": [
+    "parsing",
+    "incremental",
+    "grammar",
+    "goal"
+  ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/**"
+  ],
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "test": "tree-sitter test",
+    "build": "tree-sitter generate",
+    "publish": "tree-sitter publish",
+    "install": "node-gyp-build",
+    "prebuildify": "prebuildify --napi --strip"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.1.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.21.0"
+  },
+  "peerDependenciesMeta": {
+    "tree_sitter": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.22.6",
+    "prebuildify": "^6.0.0"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.goal",
+      "injection-regex": "^goal$"
+    }
+  ]
+}
