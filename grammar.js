@@ -1,103 +1,90 @@
 module.exports = grammar({
   name: 'goal',
 
-  extras: $ => [/\s/],
+  extras: $ => [/\s/, /\/\/.*\n?/, /\/[\s\S]*?\\\n/],
+
+  conflicts: $ => [
+    [$.function_call, $.atom],
+    [$.unary_expression, $.atom]
+  ],
 
   rules: {
-    source_file: $ => repeat(choice($.statement, $.comment)),
+    source_file: $ => repeat($.expression),
 
-    statement: $ => seq(
-      optional($.expression),
-      choice(';', '\n')
+    expression: $ => prec.left(0, repeat1($.term)),
+
+    term: $ => choice($.binary_expression, $.function_call),
+
+    function_call: $ => seq($.identifier, '(', optional(seq($.expression, repeat(seq(',', $.expression)))), ')'),
+
+    binary_expression: $ => choice(
+      $.unary_expression,
+      prec.right(1, seq(
+        $.binary_expression,
+        choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.' ),
+        $.binary_expression
+      ))
     ),
 
-    expression: $ => choice(
+    unary_expression: $ => choice(
+      seq('~', $.unary_expression),
+      seq('-', $.unary_expression),
+      seq('+', $.unary_expression),
+      seq('::', $.unary_expression),
+      seq(':+', $.unary_expression),
+      seq(':-', $.unary_expression),
+      seq('abs', $.unary_expression),
+      seq('!', $.unary_expression),
+      $.atom
+    ),
+
+    atom: $ => choice(
       $.literal,
-      $.function_call,
-      $.array,
-      $.indexing,
-      $.dict_expression,
-      $.field_access,
-      $.assignment,
-      $.lambda,
-      $.conditional,
-      $.binary_expression,
-      $.unary_expression,
-      $.identifier
+      $.symbol,
+      $.identifier,
+      seq('(', repeat(seq($.expression, optional(';'))), ')'),
+      seq('{', repeat(seq($.expression, optional(';'))), '}'),
+      seq('?[', $.expression, ';', $.expression, ';', $.expression, ']'),
+      seq($.atom, '[', optional(seq($.expression, repeat(seq(';', $.expression)))), ']'),
+      seq($.atom, '..', $.identifier),
+      seq($.atom, '!', repeat($.expression)),
+      seq($.identifier, choice(':', '::', '+:', '-:', '*:', '/:'), $.expression),
+      seq($.identifier, '(', optional(seq($.expression, repeat(seq(',', $.expression)))), ')'),
+      seq($.atom, choice('/', '\\', '\'', '`'))
     ),
 
     literal: $ => choice(
       $.number,
       $.string,
-      $.symbol
+      $.regex
     ),
 
     number: $ => /\d+(\.\d+)?/,
+
     string: $ => choice(
       /"([^"\\]|\\.)*"/,
       /qq\/[^\/]*\//,
       /rq\/[^\/]*\//
     ),
+
+    regex: $ => /rx\/[^\/]*\//,
+
     symbol: $ => /`[a-zA-Z_][a-zA-Z0-9_]*/,
-    identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)* /,
 
-    array: $ => seq('(', repeat($.expression), ')'),
+    identifier: $ => /[a-zA-Z_π][a-zA-Z0-9_π]*/,
 
-    assignment: $ => choice(
-      seq($.identifier, ':', $.expression),
-      seq($.identifier, '::', $.expression),
-      seq($.identifier, choice('+:', '-:', '*:', '/:'), $.expression)
+    atom: $ => choice(
+      $.literal,
+      $.symbol,
+      $.identifier,
+      seq('(', optional(seq($.expression, repeat(seq(';', $.expression)))), ')'),
+      seq('{', optional(seq($.expression, repeat(seq(';', $.expression)))), '}'),
+      seq('?[', $.expression, ';', $.expression, ';', $.expression, ']'),
+      seq($.atom, '[', optional(seq($.expression, repeat(seq(';', $.expression)))), ']'),
+      seq($.atom, '..', $.identifier),
+      seq($.atom, choice('/', '\\', '\'', '`'))
     ),
 
-    lambda: $ => seq('{', repeat(seq($.expression, optional(';'))), '}'),
 
-    conditional: $ => seq(
-      '?[',
-      $.expression,
-      ';',
-      $.expression,
-      ';',
-      $.expression,
-      ']'
-    ),
-
-    indexing: $ => prec(3, seq(
-      $.expression,
-      '[',
-      optional(seq($.expression, repeat(seq(';', $.expression)))),
-      ']'
-    )),
-
-    dict_expression: $ => prec.left(4, seq($.expression, '!', repeat($.expression))),
-
-    field_access: $ => prec(5, seq($.expression, '..', $.identifier)),
-
-    binary_expression: $ => choice(
-      prec.left(1, seq($.expression, '+', $.expression)),
-      prec.left(1, seq($.expression, '-', $.expression)),
-      prec.left(2, seq($.expression, '*', $.expression)),
-      prec.left(2, seq($.expression, '/', $.expression)),
-      prec.left(1, seq($.expression, '&', $.expression)),
-      prec.left(1, seq($.expression, '|', $.expression)),
-      prec.left(1, seq($.expression, '=', $.expression)),
-      prec.left(1, seq($.expression, '<', $.expression)),
-      prec.left(1, seq($.expression, '>', $.expression))
-    ),
-
-    unary_expression: $ => choice(
-      seq('~', $.expression),
-      seq('-', $.expression),
-      seq('+', $.expression)
-    ),
-
-    function_call: $ => prec(2, choice(
-      seq($.identifier, '(', ')'),
-      seq($.identifier, '(', $.expression, repeat(seq(',', $.expression)), ')')
-    )),
-
-    comment: $ => choice(
-      /\/\/.*/,
-      /\/[\s\S]*?\\\n/
-    )
   }
 });
