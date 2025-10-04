@@ -9,8 +9,11 @@ module.exports = grammar({
   extras: $ => [/\s/],
 
   rules: {
-    // The root rule for the grammar: statements are expressions separated by newlines or semicolons
-    program: $ => seq($.expression, repeat(seq($.sep, $.expression)), optional($.sep)),
+    // The root rule for the grammar: statements separated by separators
+    program: $ => seq($.statement, repeat(seq($.sep, $.statement)), optional($.sep)),
+
+    // Statements: expressions or comments
+    statement: $ => choice($.expression, $.comment),
 
     // Main expression rule: right-associative binary operations
     expression: $ => choice(
@@ -101,11 +104,14 @@ module.exports = grammar({
     // String literals
     string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
 
-    unparenthesized_array: $ => prec(-1, seq(
+    unparenthesized_array: $ => prec.left(-1, seq(
       $.array_element,
       repeat($.array_element)
     )),
 
     sep: $ => choice('\n', ';'),
+
+    // Comments: lines starting with /
+    comment: $ => token(/\/[^\n]*/),
   }
 });
