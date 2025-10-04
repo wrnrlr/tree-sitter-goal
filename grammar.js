@@ -1,90 +1,58 @@
 module.exports = grammar({
-  name: 'goal',
-
-  extras: $ => [/\s/, /\/\/.*\n?/, /\/[\s\S]*?\\\n/],
-
-  conflicts: $ => [
-    [$.function_call, $.atom],
-    [$.unary_expression, $.atom]
-  ],
+  name: 'simple_expression',
 
   rules: {
-    source_file: $ => repeat($.expression),
+    // The root rule for the grammar
+    program: $ => $.expression,
 
-    expression: $ => prec.left(0, repeat1($.term)),
-
-    term: $ => choice($.binary_expression, $.function_call),
-
-    function_call: $ => seq($.identifier, '(', optional(seq($.expression, repeat(seq(',', $.expression)))), ')'),
-
-    binary_expression: $ => choice(
+    // Main expression rule: right-associative binary operations
+    expression: $ => choice(
       $.unary_expression,
-      prec.right(1, seq(
-        $.binary_expression,
-        choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.' ),
-        $.binary_expression
-      ))
+      seq(
+        $.unary_expression,
+        $.binary_operator,
+        field('right', $.expression)  // Recursive on the right for right-associativity
+      )
     ),
 
+    // Unary expression: prefix operators, right-associative for chains
     unary_expression: $ => choice(
-      seq('~', $.unary_expression),
-      seq('-', $.unary_expression),
-      seq('+', $.unary_expression),
-      seq('::', $.unary_expression),
-      seq(':+', $.unary_expression),
-      seq(':-', $.unary_expression),
-      seq('abs', $.unary_expression),
-      seq('!', $.unary_expression),
-      $.atom
+      $.primary,
+      seq(
+        $.unary_operator,
+        field('operand', $.unary_expression)  // Recursive for multiple unaries
+      )
     ),
 
+    // Primary expressions: atoms or parenthesized
+    primary: $ => choice(
+      $.atom,
+      $.group
+    ),
+
+    // Atomic expressions: numbers or identifiers
     atom: $ => choice(
-      $.literal,
-      $.symbol,
-      $.identifier,
-      seq('(', repeat(seq($.expression, optional(';'))), ')'),
-      seq('{', repeat(seq($.expression, optional(';'))), '}'),
-      seq('?[', $.expression, ';', $.expression, ';', $.expression, ']'),
-      seq($.atom, '[', optional(seq($.expression, repeat(seq(';', $.expression)))), ']'),
-      seq($.atom, '..', $.identifier),
-      seq($.atom, '!', repeat($.expression)),
-      seq($.identifier, choice(':', '::', '+:', '-:', '*:', '/:'), $.expression),
-      seq($.identifier, '(', optional(seq($.expression, repeat(seq(',', $.expression)))), ')'),
-      seq($.atom, choice('/', '\\', '\'', '`'))
-    ),
-
-    literal: $ => choice(
       $.number,
-      $.string,
-      $.regex
+      $.identifier
     ),
 
-    number: $ => /\d+(\.\d+)?/,
-
-    string: $ => choice(
-      /"([^"\\]|\\.)*"/,
-      /qq\/[^\/]*\//,
-      /rq\/[^\/]*\//
+    // Parenthesized expression for grouping
+    group: $ => seq(
+      '(',
+      $.expression,
+      ')'
     ),
 
-    regex: $ => /rx\/[^\/]*\//,
+    // Binary operators (all treated with same precedence, right-associative)
+    binary_operator: $ => choice('+', '-', '*', '/'),
 
-    symbol: $ => /`[a-zA-Z_][a-zA-Z0-9_]*/,
+    // Unary operators (subset for prefix + and -)
+    unary_operator: $ => choice('+', '-'),
 
-    identifier: $ => /[a-zA-Z_π][a-zA-Z0-9_π]*/,
+    // Simple number literal (integer for simplicity)
+    number: $ => /\d+/,
 
-    atom: $ => choice(
-      $.literal,
-      $.symbol,
-      $.identifier,
-      seq('(', optional(seq($.expression, repeat(seq(';', $.expression)))), ')'),
-      seq('{', optional(seq($.expression, repeat(seq(';', $.expression)))), '}'),
-      seq('?[', $.expression, ';', $.expression, ';', $.expression, ']'),
-      seq($.atom, '[', optional(seq($.expression, repeat(seq(';', $.expression)))), ']'),
-      seq($.atom, '..', $.identifier),
-      seq($.atom, choice('/', '\\', '\'', '`'))
-    ),
-
-
+    // Simple identifier (alphanumeric starting with letter)
+    identifier: $ => /[a-zA-Z_]\w*/
   }
 });
