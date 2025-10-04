@@ -2,8 +2,8 @@ module.exports = grammar({
   name: 'simple_expression',
 
   rules: {
-    // The root rule for the grammar
-    program: $ => $.expression,
+    // The root rule for the grammar: statements are expressions separated by newlines
+    program: $ => seq($.expression, repeat(seq('\n', $.expression)), optional('\n')),
 
     // Main expression rule: right-associative binary operations
     expression: $ => choice(
@@ -60,7 +60,6 @@ module.exports = grammar({
       const exponentPart = seq(choice('e', 'E'), signedInteger)
 
       const binaryLiteral = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
-      const bigintLiteral = seq(choice(hexLiteral, binaryLiteral, octalLiteral, decimalDigits), 'n')
 
       const decimalLiteral = choice(
         seq(choice(
