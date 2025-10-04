@@ -2,8 +2,10 @@ module.exports = grammar({
   name: 'simple_expression',
 
   rules: {
-    // The root rule for the grammar: statements are expressions separated by newlines
-    program: $ => seq($.expression, repeat(seq('\n', $.expression)), optional('\n')),
+    // The root rule for the grammar: statements are expressions separated by newlines or semicolons
+    program: $ => seq($.expression, repeat(seq($.sep, $.expression)), optional($.sep)),
+
+    sep: $ => choice('\n', ';'),
 
     // Main expression rule: right-associative binary operations
     expression: $ => choice(
@@ -30,10 +32,11 @@ module.exports = grammar({
       $.parenthesized_expression
     ),
 
-    // Atomic expressions: numbers or identifiers
+    // Atomic expressions: numbers, identifiers, or strings
     atom: $ => choice(
       $.number,
-      $.identifier
+      $.identifier,
+      $.string
     ),
 
     // Parenthesized expression for grouping
@@ -82,6 +85,9 @@ module.exports = grammar({
     },
 
     // Simple identifier (alphanumeric starting with letter)
-    identifier: $ => /[a-zA-Z_]\w*/
+    identifier: $ => /[a-zA-Z_]\w*/,
+
+    // String literals
+    string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'))
   }
 });
