@@ -27,7 +27,7 @@ module.exports = grammar({
     // Primary expressions: atoms or parenthesized
     primary: $ => choice(
       $.atom,
-      $.group
+      $.parenthesized_expression
     ),
 
     // Atomic expressions: numbers or identifiers
@@ -37,7 +37,7 @@ module.exports = grammar({
     ),
 
     // Parenthesized expression for grouping
-    group: $ => seq(
+    parenthesized_expression: $ => seq(
       '(',
       $.expression,
       ')'
@@ -49,8 +49,38 @@ module.exports = grammar({
     // Unary operators (subset for prefix + and -)
     unary_operator: $ => choice('+', '-'),
 
-    // Simple number literal (integer for simplicity)
-    number: $ => /\d+/,
+    // Number literals supporting the specified formats
+    number: $ => {
+      const hexLiteral = seq(
+        choice('0x', '0X'),
+        /[\da-fA-F](_?[\da-fA-F])*/,
+      )
+      const decimalDigits = /\d(_?\d)*/
+      const signedInteger = seq(optional(choice('-', '+')), decimalDigits)
+      const exponentPart = seq(choice('e', 'E'), signedInteger)
+
+      const binaryLiteral = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
+      const bigintLiteral = seq(choice(hexLiteral, binaryLiteral, octalLiteral, decimalDigits), 'n')
+
+      const decimalLiteral = choice(
+        seq(choice(
+          '0',
+          seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimalDigits))),
+        ), '.', optional(decimalDigits), optional(exponentPart)),
+        seq('.', decimalDigits, optional(exponentPart)),
+        seq(choice(
+          '0',
+          seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimalDigits))),
+        ), exponentPart),
+        decimalDigits,
+      );
+
+      return token(choice(
+        hexLiteral,
+        decimalLiteral,
+        binaryLiteral,
+      ));
+    },
 
     // Simple identifier (alphanumeric starting with letter)
     identifier: $ => /[a-zA-Z_]\w*/
