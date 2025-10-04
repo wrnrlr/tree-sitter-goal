@@ -38,13 +38,14 @@ module.exports = grammar({
       $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, strings, arrays, or unparenthesized arrays
+    // Atomic expressions: numbers, identifiers, strings, arrays, unparenthesized arrays, or functions
     atom: $ => choice(
       $.number,
       $.identifier,
       $.string,
       $.array,
-      $.unparenthesized_array
+      $.unparenthesized_array,
+      $.function
     ),
 
     array: $ => prec(2, seq('(', optional($.array_body), ')')),
@@ -97,6 +98,15 @@ module.exports = grammar({
       $.primary,
       repeat1($.primary)
     )),
+
+    // Function definitions
+    function: $ => seq('{', optional(seq($.argument_list, optional(';'))), optional($.function_body), '}'),
+
+    // Argument list: [identifier; identifier; ...]
+    argument_list: $ => seq('[', $.identifier, repeat(seq(';', $.identifier)), ']'),
+
+    // Function body: similar to program, expressions separated by separators
+    function_body: $ => seq($.expression, repeat(seq($.sep, $.expression)), optional($.sep)),
 
     sep: $ => choice('\n', ';'),
 
