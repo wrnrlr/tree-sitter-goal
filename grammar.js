@@ -2,8 +2,6 @@ module.exports = grammar({
   name: 'goal',
 
   conflicts: $ => [
-    [$.atom, $.array_element],
-    [$.primary, $.array_element]
   ],
 
   extras: $ => [/\s/],
@@ -22,8 +20,7 @@ module.exports = grammar({
         $.unary_expression,
         $.binary_operator,
         field('right', $.expression)  // Recursive on the right for right-associativity
-      )),
-      prec(-1, $.unparenthesized_array)
+      ))
     ),
 
     // Unary expression: prefix operators, right-associative for chains
@@ -41,21 +38,13 @@ module.exports = grammar({
       $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, strings, or arrays
+    // Atomic expressions: numbers, identifiers, strings, arrays, or unparenthesized arrays
     atom: $ => choice(
       $.number,
       $.identifier,
       $.string,
-      $.array
-    ),
-
-    // Elements that can be in unparenthesized arrays: simple atoms or grouped expressions
-    array_element: $ => choice(
-      $.number,
-      $.identifier,
-      $.string,
       $.array,
-      $.group
+      $.unparenthesized_array
     ),
 
     array: $ => prec(2, seq('(', optional($.array_body), ')')),
@@ -68,7 +57,7 @@ module.exports = grammar({
     array_sep: $ => choice(';', '\n'),
 
     // Binary operators (all treated with same precedence, right-associative)
-    binary_operator: $ => choice('+', '-', '*', '/'),
+    binary_operator: $ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.'),
 
     // Unary operators (subset for prefix + and -)
     unary_operator: $ => choice('+', '-'),
@@ -76,8 +65,8 @@ module.exports = grammar({
     // Number literals supporting the specified formats
     number: $ => {
       const decimal = /\d(_?\d)*/
-      const hexLiteral = seq( choice('0x', '0X'), /[\da-fA-F](_?[\da-fA-F])*/, )
-      const binaryLiteral = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
+      const hex = seq(choice('0x', '0X'), /[\da-fA-F](_?[\da-fA-F])*/, )
+      const binary = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
       const exponent = seq(choice('e', 'E'), seq(optional(choice('-', '+')), decimal))
 
       const decimalLiteral = choice(
@@ -92,9 +81,9 @@ module.exports = grammar({
       );
 
       return token(choice(
-        hexLiteral,
+        hex,
         decimalLiteral,
-        binaryLiteral,
+        binary,
       ));
     },
 
@@ -105,8 +94,8 @@ module.exports = grammar({
     string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
 
     unparenthesized_array: $ => prec.left(-1, seq(
-      $.array_element,
-      repeat($.array_element)
+      $.primary,
+      repeat1($.primary)
     )),
 
     sep: $ => choice('\n', ';'),
