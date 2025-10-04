@@ -5,8 +5,6 @@ module.exports = grammar({
     // The root rule for the grammar: statements are expressions separated by newlines or semicolons
     program: $ => seq($.expression, repeat(seq($.sep, $.expression)), optional($.sep)),
 
-    sep: $ => choice('\n', ';'),
-
     // Main expression rule: right-associative binary operations
     expression: $ => choice(
       $.unary_expression,
@@ -29,22 +27,36 @@ module.exports = grammar({
     // Primary expressions: atoms or parenthesized
     primary: $ => choice(
       $.atom,
-      $.parenthesized_expression
+      $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, or strings
+    // Atomic expressions: numbers, identifiers, strings, arrays, or unparenthesized arrays
     atom: $ => choice(
       $.number,
       $.identifier,
-      $.string
+      $.string,
+      $.array
     ),
 
     // Parenthesized expression for grouping
-    parenthesized_expression: $ => seq(
+    group: $ => seq(
       '(',
       $.expression,
       ')'
     ),
+
+    // Array expressions
+    array: $ => seq(
+      '(',
+      optional($.array_body),
+      ')'
+    ),
+
+    array_body: $ => prec.left(seq(
+      $.expression,
+      repeat1(seq($.array_sep, $.expression))
+    )),
+    array_sep: $ => prec(1, choice(' ', ';', '\n')),
 
     // Binary operators (all treated with same precedence, right-associative)
     binary_operator: $ => choice('+', '-', '*', '/'),
@@ -54,27 +66,20 @@ module.exports = grammar({
 
     // Number literals supporting the specified formats
     number: $ => {
-      const hexLiteral = seq(
-        choice('0x', '0X'),
-        /[\da-fA-F](_?[\da-fA-F])*/,
-      )
-      const decimalDigits = /\d(_?\d)*/
-      const signedInteger = seq(optional(choice('-', '+')), decimalDigits)
-      const exponentPart = seq(choice('e', 'E'), signedInteger)
-
+      const decimal = /\d(_?\d)*/
+      const hexLiteral = seq( choice('0x', '0X'), /[\da-fA-F](_?[\da-fA-F])*/, )
       const binaryLiteral = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
+      const exponent = seq(choice('e', 'E'), seq(optional(choice('-', '+')), decimal))
 
       const decimalLiteral = choice(
         seq(choice(
-          '0',
-          seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimalDigits))),
-        ), '.', optional(decimalDigits), optional(exponentPart)),
-        seq('.', decimalDigits, optional(exponentPart)),
+          '0', seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimal))),
+        ), '.', optional(decimal), optional(exponent)),
+        seq('.', decimal, optional(exponent)),
         seq(choice(
-          '0',
-          seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimalDigits))),
-        ), exponentPart),
-        decimalDigits,
+          '0', seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimal))),
+        ), exponent),
+        decimal,
       );
 
       return token(choice(
@@ -88,6 +93,8 @@ module.exports = grammar({
     identifier: $ => /[a-zA-Z_]\w*/,
 
     // String literals
-    string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'))
+    string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
+
+    sep: $ => prec(2, choice('\n', ';', ' ')),
   }
 });
