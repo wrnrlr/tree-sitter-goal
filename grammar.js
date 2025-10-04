@@ -1,5 +1,12 @@
 module.exports = grammar({
-  name: 'simple_expression',
+  name: 'goal',
+
+  conflicts: $ => [
+    [$.unparenthesized_array],
+    [$.array_body, $.unparenthesized_array],
+    [$.atom, $.array_element],
+    [$.primary, $.array_element]
+  ],
 
   rules: {
     // The root rule for the grammar: statements are expressions separated by newlines or semicolons
@@ -8,20 +15,20 @@ module.exports = grammar({
     // Main expression rule: right-associative binary operations
     expression: $ => choice(
       $.unary_expression,
-      seq(
+      prec(2, seq(
         $.unary_expression,
         $.binary_operator,
         field('right', $.expression)  // Recursive on the right for right-associativity
-      )
+      ))
     ),
 
     // Unary expression: prefix operators, right-associative for chains
     unary_expression: $ => choice(
       $.primary,
-      seq(
+      prec(1, seq(
         $.unary_operator,
         field('operand', $.unary_expression)  // Recursive for multiple unaries
-      )
+      ))
     ),
 
     // Primary expressions: atoms or parenthesized
@@ -35,7 +42,17 @@ module.exports = grammar({
       $.number,
       $.identifier,
       $.string,
-      $.array
+      $.array,
+      $.unparenthesized_array
+    ),
+
+    // Elements that can be in unparenthesized arrays: simple atoms or grouped expressions
+    array_element: $ => choice(
+      $.number,
+      $.identifier,
+      $.string,
+      $.array,
+      $.group
     ),
 
     // Parenthesized expression for grouping
@@ -46,17 +63,17 @@ module.exports = grammar({
     ),
 
     // Array expressions
-    array: $ => seq(
+    array: $ => prec(1, seq(
       '(',
       optional($.array_body),
       ')'
-    ),
+    )),
 
-    array_body: $ => prec.left(seq(
+    array_body: $ => seq(
       $.expression,
       repeat1(seq($.array_sep, $.expression))
-    )),
-    array_sep: $ => prec(1, choice(' ', ';', '\n')),
+    ),
+    array_sep: $ => prec(1, choice(' ', ';', '\n', seq(';', ' '))),
 
     // Binary operators (all treated with same precedence, right-associative)
     binary_operator: $ => choice('+', '-', '*', '/'),
@@ -95,6 +112,11 @@ module.exports = grammar({
     // String literals
     string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
 
-    sep: $ => prec(2, choice('\n', ';', ' ')),
+    unparenthesized_array: $ => prec.left(seq(
+      $.array_element,
+      repeat1(seq(' ', $.array_element))
+    )),
+
+    sep: $ => prec(2, choice('\n', ';')),
   }
 });
