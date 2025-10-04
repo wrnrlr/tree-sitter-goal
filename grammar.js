@@ -2,11 +2,11 @@ module.exports = grammar({
   name: 'goal',
 
   conflicts: $ => [
-    [$.unparenthesized_array],
-    [$.array_body, $.unparenthesized_array],
     [$.atom, $.array_element],
     [$.primary, $.array_element]
   ],
+
+  extras: $ => [/\s/],
 
   rules: {
     // The root rule for the grammar: statements are expressions separated by newlines or semicolons
@@ -19,7 +19,8 @@ module.exports = grammar({
         $.unary_expression,
         $.binary_operator,
         field('right', $.expression)  // Recursive on the right for right-associativity
-      ))
+      )),
+      prec(-1, $.unparenthesized_array)
     ),
 
     // Unary expression: prefix operators, right-associative for chains
@@ -37,13 +38,12 @@ module.exports = grammar({
       $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, strings, arrays, or unparenthesized arrays
+    // Atomic expressions: numbers, identifiers, strings, or arrays
     atom: $ => choice(
       $.number,
       $.identifier,
       $.string,
-      $.array,
-      $.unparenthesized_array
+      $.array
     ),
 
     // Elements that can be in unparenthesized arrays: simple atoms or grouped expressions
@@ -55,25 +55,14 @@ module.exports = grammar({
       $.group
     ),
 
-    // Parenthesized expression for grouping
-    group: $ => seq(
-      '(',
-      $.expression,
-      ')'
-    ),
-
-    // Array expressions
-    array: $ => prec(1, seq(
-      '(',
-      optional($.array_body),
-      ')'
-    )),
+    array: $ => prec(2, seq('(', optional($.array_body), ')')),
+    group: $ => prec(1, seq('(', $.expression, ')')),
 
     array_body: $ => seq(
       $.expression,
       repeat1(seq($.array_sep, $.expression))
     ),
-    array_sep: $ => prec(1, choice(' ', ';', '\n', seq(';', ' '))),
+    array_sep: $ => choice(';', '\n'),
 
     // Binary operators (all treated with same precedence, right-associative)
     binary_operator: $ => choice('+', '-', '*', '/'),
@@ -112,11 +101,11 @@ module.exports = grammar({
     // String literals
     string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
 
-    unparenthesized_array: $ => prec.left(seq(
+    unparenthesized_array: $ => prec(-1, seq(
       $.array_element,
-      repeat1(seq(' ', $.array_element))
+      repeat($.array_element)
     )),
 
-    sep: $ => prec(2, choice('\n', ';')),
+    sep: $ => choice('\n', ';'),
   }
 });
