@@ -1,73 +1,63 @@
 const name = /[\W_π][\w_π]*/
 const sep = /[\n;]/
 
-module.exports = grammar({
+const int = /\d+/,
+      decimal = /\d+\.\d+/,
+      hexadecimal = /0x[\da-f]+/i,
+      standard_form = /\d+e-?\d+/
+
+export default grammar({
   name: 'goal',
-
-  extras: $ => [/\s/],
-
   rules: {
-    program: $ => repeat(choice(
-      token(/\/[^\n]*/),                                // comment
-      seq(optional($.E, ":"), $.E, optional(";", $.E)), // E : E ; E
-      $.e                                               // e
-    )),
-
-    E: $ => prec.left(seq(
-      $.monadic_expr,
-      repeat(choice(seq($.diadic, $.monadic_expr), $.monadic_expr))
-    )),
-
-    e: $ => choice(
-      seq($.n, $.v, $.e), // n v e
-      seq($.t, $.e),      // t e
+    E: $ => repeat(seq(choice(
+      $.comment,
+      seq($.E, ';', $.E),
+      $.e
+    ), /\n/)),
+    comment: _ => choice(
+      /\/^.*$/,
+      /^\/\r?\n[\s\S]*?\r?\n\\$/m
     ),
-
-    t: $ => choice($.n, $.v),
-
-    v: $ => choice(seq($.t, $.A), $.V),
-
-    n: $ => choice(),
-
-    monadic_expr: $ => seq(repeat($.monadic), $.primary),
-
-    assign: $ => prec(1, seq(name, ':', $.E)),
-
-    primary: $ => choice( $.array, $.atom, $.group ),
-
-    atom: $ => choice(
-      $.number,
+    e: $ => choice(
+      seq($.n, $.v, $.e),
+      seq($.t, $.e),
+    ),
+    t: $ => choice(
+      $.n,
+      $.v
+    ),
+    v: $ => choice(
+      seq($.t, $.A),
+      $.V
+    ),
+    n: $ => choice(
+      seq($.t, '[', $.E, ']'),
+      seq('?[', $.E, ']'),
+      seq('(', $.E, ')'),
+      seq('{', optional($.args), $.E, '}'),
+      $.N
+    ),
+    N: $ => choice(
+      $.empty, $.nil, $.infinity,
+      int, decimal, hexadecimal, standard_form,
       name,
       $.string,
       $.lambda,
       $.cond,
     ),
-
+    empty: _ => /(\s*)/,
+    nil: _ => /0n/i,
+    infinity: _ => /0w/i,
+    monadic_expr: $ => seq(repeat($.monadic), $.primary),
+    assign: $ => prec(1, seq(name, ':', $.E)),
+    primary: $ => choice( $.array, $.atom, $.group ),
     array: $ => prec(3, seq('(', $.body, ')')),
-
     group: $ => prec(2, seq('(', $.E, ')')),
-
-    body: $ => repeat1($.expr),
-
-    diadic: _ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.', "'", ';'),
-
+    diadic: _ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
     monadic: _ => choice('+', '-', '!', '~', 'abs'),
-
-    // Number literals supporting the specified formats
-    number: $ => token(choice(
-      /0n/i,         // null
-      /0w/i,         // infinity
-      /0b[01]+/i,    // binairy
-      /0x[\da-f]+/i, //
-      /(?:\d+\.\d+(?:e[+-]?\d+)?|\d+(?:e[+-]?\d+)?)/i,
-    )),
-
+    adverb: $ => choice('/', '\\', "'"),
     string: _ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
-
     lambda: $ => seq('{', optional(seq($.args, optional(';'))), optional($.E), '}'),
-
-    args: _ => seq('[', name, repeat(seq(';', name)), ']'),
-
-    cond: $ => seq('?[', $.E, sep, $.E, sep, $.E, ']'),
+    args: _ => seq('[', name, repeat(seq(';', name)), ']')
   }
 });

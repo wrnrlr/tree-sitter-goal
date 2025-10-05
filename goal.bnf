@@ -1,83 +1,10 @@
-<E>   ::== <E> <sep> <E> | <e>
-<sep> ::== ";" | "\n"
-<e>   ::== <n> <v> <e> | <t> <e> | <empty>
-<t>   ::== <n> | <v>
-<v>   ::== <t> <A> | <V>
-<V>   ::== ":" | "+" | "-" | "*" | "%" | "!" | "&" | "|" | "<" | ">" | "=" | "~" | "," | "^" | "#" | "_" | "$" | "?" | "@" | "."
-<n>   ::== <t> "[" <E> "]" | "(" E ")" | "{" E "}" | N
-<A>   ::== "'" | "\\" | "/"
+There is no bnf for goal, the closes we have is this cryptic grammer from k:
 
-<statements> ::= <statement> (<comment> | ";" | "\n" <statement>)
-<statement> ::= <expression> | <statement>
-
-<assignment> ::== <list_assignment> | <identifier> ":" <expression>
-<list_assignment> ::==
-
-<statement> ::= <expression>? ("\n" | ";") |
-
-<expression> ::= <monadic_expr> (dyadic_op monadic_expr)*
-
-<monadic_op> ::= "~" | "+" | "-" | "::" | "abs" | ":" | "+" | "-" | "*" | "%" | "!" | "&" | "|" | "<" | ">" | "=" | "~" | "," | "^" | "#" | "_" | "$" | "?" | "@" | "."
-
-<dyadic_op> ::= ":" | "+" | "-" | "*" | "%" | "!" | "&" | "|" | "<" | ">" | "=" | "~" | "," | "^" | "#" | "_" | "$" | "?" | "@" | "."
-
-<adverb> ::= "/" | "\\" | "'" | "`"
-
-<monadic_expr> ::= monadic_op* <atom>
-
-<atom> ::= <literal>
-     | <symbol>
-     | <identifier>
-     | "(" <list> ")"
-     | "{" <lambda_body> "}"
-     | "[" sequence "]"
-     | "?[" <expression> ";" <expression> ";" <expression> "]"
-     | <atom> "[" arguments? "]"
-     | <atom> ".." identifier
-     | <atom> "!" <expression>
-     | identifier assign_op expression
-     | <atom> adverb
-
-<arguments> ::= <expression> (";" <expression>)*
-
-<list> ::= <expression> (";" <expression>)*
-
-sequence ::= <expression> (";" <expression>)*
-
-<lambda> ::== "{" <lambda_body> "}"
-
-lambda_body ::= lambda_args? <expression> (";" <expression>)*
-
-lambda_args ::= "[" lambda_arg ("," lambda_arg)* ("|" lambda_arg ("," lambda_arg)*)? "]"
-
-lambda_arg ::= identifier | ";"
-
-<literal> ::= number | string | regexp
-
-<number> ::= /\d+(\.\d+(e[-+]?\d+)?)?/ | /0b[01]+/ | /0x[0-9a-fA-F]+/ | "0n" | "0w"
-
-<string> ::= /"([^"\\]|\\.)*"/
-
-regexp ::= "rx" /([^\/]|\\.)*\//
-
-<symbol> ::= "`" <name>
-
-<identifier> ::= name ("." name)*
-
-<names> ::== <name> (";" <ws> <name>)
-
-<name> ::== /[a-zA-Z_π][a-zA-Z0-9_π]*/
-
-<assign_op> ::= ":" | "::" | "+:" | "-:" | "*:" | "%:" | "!:" | "&:" | "|:" | "<:" | ">:" | "=:" | "~:" | ",:" | "^:" | "#:" | "_:" | "$:" | "?:" | "@:" | ".:"
-
-<comment> ::== <single_line_comment> | <multi_line_comment>
-
-<single_line_comment> ::= "/" <any_chars> <newline>
-
-<multi_line_comment> ::= "/" <newline> <multi_line_content> "/" <newline>
-<multi_line_content> ::= <any_char_or_newline> <multi_line_content> | ε
-<any_char_or_newline> ::= any character including newline except "/"
-
-<any_chars> ::= <any_char> <any_chars> | ε
-<any_char> ::= any character except newline
-<newline> ::= "\n" | "\r\n"
+```
+grammar:
+  E : E ; E | e
+  e : n v e | t e | ε
+  t : n | v
+  v : t A | V
+  n : t [ E ] | ( E ) | { E } | N
+```

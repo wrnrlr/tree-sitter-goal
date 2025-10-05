@@ -3,5 +3,13 @@
 A tree-sitter grammer for the Goal array programming language.
 
 ## Dev Tips
-- Run generate, make and parse: `tree-sitter generate && make clean && make && tree-sitter parse test/_.goal && echo "OK" || echo "FAIL"`.
-- Execute goal program with `g` command: `g <file.goal> && echo "OK" || echo "FAIL"`.
+- Test parsing of `.goal` file with clean build:
+  ```
+  tree-sitter generate && \
+    make clean && make && \
+    tree-sitter parse <file.goal> && echo "OK" || echo "ERROR"
+  ```
+- Run file with goal interpreter `g` as authoritative source of valid syntax:
+  ```
+  g <file.goal> && echo "OK" || echo "ERROR"
+  ```

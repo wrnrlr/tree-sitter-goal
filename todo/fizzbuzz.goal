@@ -1,4 +1,4 @@
-/ FizzBuzz 1
+/ FizzBuzz with conditional with newlines
 {
   {
     ?[0=15!x;"FizzBuzz"
@@ -7,7 +7,7 @@
   }'1+!x
 } 100
 
-/ Fizzbuzz 2
+/ Fizzbuzz with conditional without newlines
 {
   {
     ?[0=15!x;"FizzBuzz"; ?[0=3!x;"Fizz"; ?[0=5!x;"Buzz"; x]]]

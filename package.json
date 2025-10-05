@@ -1,5 +1,6 @@
 {
   "name": "tree-sitter-goal",
+  "type": "module",
   "version": "0.0.0",
   "description": "Goal grammar for tree-sitter",
   "main": "bindings/node",
