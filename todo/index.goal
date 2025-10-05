@@ -1,0 +1,12 @@
+x[y]
+x@y
+x[]
+x[*]
+x[!#x]
+
+x[y;z;…]
+x[y]:z
+x:@[x;y;:;z]
+
+x[y]op:z
+x:@[x;y;op;z]
