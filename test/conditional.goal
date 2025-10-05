@@ -1,17 +1,1 @@
 ?[1;2;3]
-
-/ FizzBuzz 1
-{
-  {
-    ?[0=15!x;"FizzBuzz"
-    ?[0=3!x;"Fizz"
-    ?[0=5!x;"Buzz"; x]]]
-  }'1+!x
-} 100
-
-/ Fizzbuzz 2
-{
-  {
-    ?[0=15!x;"FizzBuzz";?[0=3!x;"Fizz";?[0=5!x;"Buzz"; x]]]
-  }'1+!x
-} 100
