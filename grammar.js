@@ -1,3 +1,6 @@
+const decimal = /\d(_?\d)*/
+const name = /\W\w*/
+
 module.exports = grammar({
   name: 'goal',
 
@@ -10,113 +13,66 @@ module.exports = grammar({
     // The root rule for the grammar: statements separated by separators
     program: $ => seq($.statement, repeat(seq($.sep, $.statement)), optional($.sep)),
 
-    // Statements: expressions or comments
     statement: $ => choice($.expression, $.comment),
 
-    // Main expression rule: right-associative binary operations
+    // right-associative binary operations
     expression: $ => choice(
-      $.unary_expression,
-      prec(2, seq(
-        $.unary_expression,
-        $.binary_operator,
-        field('right', $.expression)  // Recursive on the right for right-associativity
-      ))
+      $.monadic,
+      prec(2, seq($.monadic, $.diadic, field('right', $.expression)))
     ),
 
-    // Unary expression: prefix operators, right-associative for chains
-    unary_expression: $ => choice(
-      $.primary,
-      prec(1, seq(
-        $.unary_operator,
-        field('operand', $.unary_expression)  // Recursive for multiple unaries
-      ))
-    ),
-
-    // Primary expressions: atoms or parenthesized
     primary: $ => choice(
       $.atom,
       $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, strings, arrays, unparenthesized arrays, functions, or conditionals
     atom: $ => choice(
       $.number,
-      $.identifier,
+      name,
       $.string,
       $.array,
       $.unparenthesized_array,
-      $.function,
-      $.conditional
+      $.lambda,
+      $.cond
     ),
 
     array: $ => prec(2, seq('(', optional($.array_body), ')')),
+
     group: $ => prec(1, seq('(', $.expression, ')')),
 
     array_body: $ => seq(
       $.expression,
-      repeat1(seq($.array_sep, $.expression))
+      repeat1(seq($.sep, $.sep))
     ),
-    array_sep: $ => choice(';', '\n'),
 
-    // Binary operators (all treated with same precedence, right-associative)
-    binary_operator: $ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.', "'"),
+    diadic: _ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.', "'"),
 
-    // Unary operators (subset for prefix +, -, !)
-    unary_operator: $ => choice('+', '-', '!'),
+    monadic: _ => choice('+', '-', '!'),
 
     // Number literals supporting the specified formats
-    number: $ => {
-      const decimal = /\d(_?\d)*/
-      const hex = seq(choice('0x', '0X'), /[\da-fA-F](_?[\da-fA-F])*/, )
-      const binary = seq(choice('0b', '0B'), /[0-1](_?[0-1])*/)
-      const exponent = seq(choice('e', 'E'), seq(optional(choice('-', '+')), decimal))
-
-      const decimalLiteral = choice(
-        seq(choice(
-          '0', seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimal))),
-        ), '.', optional(decimal), optional(exponent)),
-        seq('.', decimal, optional(exponent)),
-        seq(choice(
-          '0', seq(optional('0'), /[1-9]/, optional(seq(optional('_'), decimal))),
-        ), exponent),
-        decimal,
-      );
-
-      return token(choice(
-        hex,
-        decimalLiteral,
-        binary,
-      ));
-    },
-
-    // Simple identifier (alphanumeric starting with letter)
-    identifier: $ => /[a-zA-Z_]\w*/,
+    number: $ => token(choice(
+        /0x[\da-f]+/i,
+        /0[bB][01](?:_?[01])*/,
+        /(?:\d+\.\d+(?:e[+-]?\d+)?|\d+(?:e[+-]?\d+)?)/i,
+      )
+    ),
 
     // String literals
-    string: $ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
+    string: _ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
 
     unparenthesized_array: $ => prec.left(-1, seq(
       $.primary,
       repeat1($.primary)
     )),
 
-    // Function definitions
-    function: $ => seq('{', optional(seq($.argument_list, optional(';'))), optional($.function_body), '}'),
+    lambda: $ => seq('{', optional(seq($.args, optional(';'))), optional($.expression), '}'),
 
-    // Argument list: [identifier; identifier; ...]
-    argument_list: $ => seq('[', $.identifier, repeat(seq(';', $.identifier)), ']'),
+    args: _ => seq('[', name, repeat(seq(';', name)), ']'),
 
-    // Function body: a single expression
-    function_body: $ => $.expression,
+    cond: $ => seq('?[', $.expression, $.sep, $.expression, $.sep, $.expression, ']'),
 
-    // Conditional expressions
-    conditional_sep: $ => choice(';', '\n'),
+    sep: _ => choice('\n', ';'),
 
-    conditional: $ => seq('?[', $.expression, $.conditional_sep, $.expression, $.conditional_sep, $.expression, ']'),
-
-    sep: $ => choice('\n', ';'),
-
-    // Comments: lines starting with /
-    comment: $ => token(/\/[^\n]*/),
+    comment: _ => token(/\/[^\n]*/),
   }
 });
