@@ -38,14 +38,15 @@ module.exports = grammar({
       $.group
     ),
 
-    // Atomic expressions: numbers, identifiers, strings, arrays, unparenthesized arrays, or functions
+    // Atomic expressions: numbers, identifiers, strings, arrays, unparenthesized arrays, functions, or conditionals
     atom: $ => choice(
       $.number,
       $.identifier,
       $.string,
       $.array,
       $.unparenthesized_array,
-      $.function
+      $.function,
+      $.conditional
     ),
 
     array: $ => prec(2, seq('(', optional($.array_body), ')')),
@@ -58,10 +59,10 @@ module.exports = grammar({
     array_sep: $ => choice(';', '\n'),
 
     // Binary operators (all treated with same precedence, right-associative)
-    binary_operator: $ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.'),
+    binary_operator: $ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.', "'"),
 
-    // Unary operators (subset for prefix + and -)
-    unary_operator: $ => choice('+', '-'),
+    // Unary operators (subset for prefix +, -, !)
+    unary_operator: $ => choice('+', '-', '!'),
 
     // Number literals supporting the specified formats
     number: $ => {
@@ -105,8 +106,13 @@ module.exports = grammar({
     // Argument list: [identifier; identifier; ...]
     argument_list: $ => seq('[', $.identifier, repeat(seq(';', $.identifier)), ']'),
 
-    // Function body: similar to program, expressions separated by separators
-    function_body: $ => seq($.expression, repeat(seq($.sep, $.expression)), optional($.sep)),
+    // Function body: a single expression
+    function_body: $ => $.expression,
+
+    // Conditional expressions
+    conditional_sep: $ => choice(';', '\n'),
+
+    conditional: $ => seq('?[', $.expression, $.conditional_sep, $.expression, $.conditional_sep, $.expression, ']'),
 
     sep: $ => choice('\n', ';'),
 
