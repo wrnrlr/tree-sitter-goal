@@ -2,4 +2,6 @@
 
 A tree-sitter grammer for the Goal array programming language.
 
-https://gist.github.com/Aerijo/df27228d70c633e088b0591b8857eeef
+## Dev Tips
+- Run generate, make and parse: `tree-sitter generate && make clean && make && tree-sitter parse test/_.goal`.
+- Execute goal program with `g` command: `g <file.goal>`.

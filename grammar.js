@@ -1,5 +1,5 @@
 const decimal = /\d(_?\d)*/
-const name = /\W\w*/
+const name = /[a-zA-Z_π][a-zA-Z0-9_π]*/
 
 module.exports = grammar({
   name: 'goal',
@@ -13,13 +13,15 @@ module.exports = grammar({
     // The root rule for the grammar: statements separated by separators
     program: $ => seq($.statement, repeat(seq($.sep, $.statement)), optional($.sep)),
 
-    statement: $ => choice($.expression, $.comment),
+    statement: $ => choice($.assignment, $.expression, $.comment),
 
-    // right-associative binary operations
-    expression: $ => choice(
-      $.monadic,
-      prec(2, seq($.monadic, $.diadic, field('right', $.expression)))
-    ),
+    expression: $ => $.binary_expr,
+
+    binary_expr: $ => prec.left(seq($.monadic_expr, repeat(seq($.diadic, $.monadic_expr)))),
+
+    monadic_expr: $ => seq(repeat($.monadic), $.primary),
+
+    assignment: $ => prec(1, seq(name, ':', $.expression)),
 
     primary: $ => choice(
       $.atom,
@@ -33,21 +35,24 @@ module.exports = grammar({
       $.array,
       $.unparenthesized_array,
       $.lambda,
-      $.cond
+      $.cond,
+      $.colon
     ),
 
-    array: $ => prec(2, seq('(', optional($.array_body), ')')),
+    colon: _ => ':',
+
+        array: $ => prec(2, seq('(', optional($.array_body), ')')),
 
     group: $ => prec(1, seq('(', $.expression, ')')),
 
     array_body: $ => seq(
       $.expression,
-      repeat1(seq($.sep, $.sep))
+      repeat(seq($.sep, $.expression))
     ),
 
     diadic: _ => choice(':', '+', '-', '*', '%', '!', '&', '|', '<', '>', '=', '~', ',', '^', '#', '_', '$', '?', '@', '.', "'"),
 
-    monadic: _ => choice('+', '-', '!'),
+    monadic: _ => choice('+', '-', '!', '~', 'abs'),
 
     // Number literals supporting the specified formats
     number: $ => token(choice(
