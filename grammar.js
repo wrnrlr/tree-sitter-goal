@@ -81,7 +81,7 @@ export default grammar({
     int: _ => token(/-?\d+/),
     decimal: _ => token(/-?\d+\.\d+/),
     hexadecimal: _ => token(/-?0x[\da-f]+/i),
-    standard_form: _ => token(/-?\d+e-?\d+/),
+    standard_form: _ => token(/-?\d+e[+-]?\d+/),
     name: _ => /[a-zA-Z_π][\w_π]*/,
     comment: _ => /\/[^\n]*/,
   }
