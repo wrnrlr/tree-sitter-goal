@@ -1,27 +1,49 @@
+/*
+Be careful with whitespace, it sometimes affect hopw things are parsed.
+Arrays for example
+
+Array of 3 numbers
+```goal
+1 2 3
+```
+
+binairy/dyadic operator Array of 3 numbers
+```goal
+1 2 3 + 4 5 6
+```
+
+
+*/
+
 export default grammar({
   name: 'goal',
-  supertypes: $ => [$.e],
+  supertypes: $ => [$.e, $.N],
   conflicts: $ => [],
   rules: {
+    // E: E ; E | e
     E: $ => repeatSep(choice(
       $.comment,
-      seq( $.e, repeat(seq(';', $.e)) )
+      repeatSep($.e, ';')
     ), '\n'),
+    // e: n v e | te | ε
     e: $ => choice(
       $.nve,
       $.te,
-      $.N
+      $.empty // I am not sure about this, the grammer says this should be empty, not sure they mean "nothing" on an lexical level, or the semantic construction "empty array with token $.empty".
     ),
     nve: $ => seq($.n, $.v, $.e),
     te: $ => seq($.t, $.e),
+    // t : n | v
     t: $ => prec.right(choice(
       $.n,
       $.v
     )),
+    // t A | V
     v: $ => choice(
       seq($.t, /\s+/, $.A),
       $.V
     ),
+    // n : t [ E ] | ( E ) | { E } | N
     n: $ => choice(
       // seq($.t, '[', $.E, ']'),
       // seq('?[', $.E, ']'),
