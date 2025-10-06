@@ -1,29 +1,36 @@
-const sep = /[\n;]/
-
-/// seq($.E, /\s*;\s/, $.E),
-
 export default grammar({
   name: 'goal',
+  supertypes: $ => [],
+  conflicts: $ => [
+    [$.nve, $.te],
+    [$.E]
+  ],
   rules: {
-    E: $ => choiceSeq([$.comment, $.e], sep),
+    E: $ => choiceSeq([
+      $.comment,
+      seq($.E, ';', $.E),
+      $.e
+    ], '\n'),
     e: $ => choice(
-      prec(2, seq($.n, $.v, $.e)),
-      prec(1, seq($.t, $.e)),
+      $.nve,
+      $.te,
       $.N
     ),
-    t: $ => choice(
+    nve: $ => seq($.n, $.v, $.e),
+    te: $ => seq($.t, $.e),
+    t: $ => prec.right(choice(
       $.n,
       $.v
-    ),
+    )),
     v: $ => choice(
-      // seq($.t, /\s+/, $.A),
+      seq($.t, /\s+/, $.A),
       $.V
     ),
     n: $ => choice(
-      // seq($.t, '[', $.E, ']'),
-      // seq('?[', $.E, ']'),
+      seq($.t, '[', $.E, ']'),
+      seq('?[', $.E, ']'),
       seq(/\(/, $.E, /\)/),
-      // seq('{', optional($.args), $.E, '}'),
+      seq('{', optional($.args), $.E, '}'),
       $.N
     ),
     V: $ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
@@ -46,9 +53,7 @@ export default grammar({
     hexadecimal: _ => /0x[\da-f]+/i,
     standard_form: _ => /\d+e-?\d+/,
     name: _ => /[\W_π][\w_π]*/,
-    comment: _ => choice(
-      /\/[^\n]*/,
-    ),
+    comment: _ => /\/[^\n]*/,
   }
 });
 
