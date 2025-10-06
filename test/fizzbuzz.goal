@@ -1,0 +1,15 @@
+/ FizzBuzz with conditional with newlines
+{
+  {
+    ?[0=15!x;"FizzBuzz"
+    ?[0=3!x;"Fizz"
+    ?[0=5!x;"Buzz"; x]]]
+  }'1+!x
+} 100
+
+/ Fizzbuzz with conditional without newlines
+{
+  {
+    ?[0=15!x;"FizzBuzz"; ?[0=3!x;"Fizz"; ?[0=5!x;"Buzz"; x]]]
+  }'1+!x
+} 100
