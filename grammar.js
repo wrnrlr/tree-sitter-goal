@@ -2,15 +2,15 @@ export default grammar({
   name: 'goal',
   supertypes: $ => [],
   conflicts: $ => [
-    [$.nve, $.te],
-    [$.E]
+    // [$.nve, $.te],
+    // [$.E]
   ],
   rules: {
-    E: $ => choiceSeq([
+    E: $ => prec.left(repeatSep(choice(
       $.comment,
-      seq($.E, ';', $.E),
+      prec.right(repeatSep($.E, ';')),
       $.e
-    ], '\n'),
+    ), '\n')),
     e: $ => choice(
       $.nve,
       $.te,
@@ -27,10 +27,10 @@ export default grammar({
       $.V
     ),
     n: $ => choice(
-      seq($.t, '[', $.E, ']'),
-      seq('?[', $.E, ']'),
-      seq(/\(/, $.E, /\)/),
-      seq('{', optional($.args), $.E, '}'),
+      // seq($.t, '[', $.E, ']'),
+      // seq('?[', $.E, ']'),
+      // seq(/\(/, $.E, /\)/),
+      // seq('{', optional($.args), $.E, '}'),
       $.N
     ),
     V: $ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
@@ -57,10 +57,10 @@ export default grammar({
   }
 });
 
-function choiceSeq(items, separator, trailing = true) {
+function repeatSep(item, separator, trailing = true) {
   return seq(
-    choice(...items),
-    repeat(seq(separator, choice(...items))),
+    item,
+    repeat(seq(separator, item)),
     trailing ? optional(separator) : ''
   );
 }
