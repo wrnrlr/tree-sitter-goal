@@ -1,13 +1,11 @@
 const sep = /[\n;]/
 
+/// seq($.E, /\s*;\s/, $.E),
+
 export default grammar({
   name: 'goal',
   rules: {
-    E: $ => repeat(seq(choice(
-      $.comment,
-      // seq($.E, /\s*;\s/, $.E),
-      $.e
-    ), choice('\n', ';'))),
+    E: $ => choiceSeq([$.comment, $.e], sep),
     e: $ => choice(
       prec(2, seq($.n, $.v, $.e)),
       prec(1, seq($.t, $.e)),
@@ -53,3 +51,11 @@ export default grammar({
     ),
   }
 });
+
+function choiceSeq(items, separator, trailing = true) {
+  return seq(
+    choice(...items),
+    repeat(seq(separator, choice(...items))),
+    trailing ? optional(separator) : ''
+  );
+}
