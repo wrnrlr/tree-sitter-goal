@@ -1,63 +1,55 @@
-const name = /[\W_π][\w_π]*/
 const sep = /[\n;]/
-
-const int = /\d+/,
-      decimal = /\d+\.\d+/,
-      hexadecimal = /0x[\da-f]+/i,
-      standard_form = /\d+e-?\d+/
 
 export default grammar({
   name: 'goal',
   rules: {
     E: $ => repeat(seq(choice(
       $.comment,
-      seq($.E, ';', $.E),
-      $.e
+      // seq($.E, /\s*;\s/, $.E),
+      $.n
     ), /\n/)),
-    comment: _ => choice(
-      /\/^.*$/,
-      /^\/\r?\n[\s\S]*?\r?\n\\$/m
-    ),
     e: $ => choice(
-      seq($.n, $.v, $.e),
-      seq($.t, $.e),
+      seq($.n, /\s*/, $.v, /\s*/, $.e),
+      seq($.t, /\s*/, $.e),
+      $.empty
     ),
     t: $ => choice(
-      $.n,
+      // $.n,
       $.v
     ),
     v: $ => choice(
-      seq($.t, $.A),
+      // seq($.t, /\s+/, $.A),
       $.V
     ),
     n: $ => choice(
-      seq($.t, '[', $.E, ']'),
-      seq('?[', $.E, ']'),
-      seq('(', $.E, ')'),
-      seq('{', optional($.args), $.E, '}'),
+      // seq($.t, '[', $.E, ']'),
+      // seq('?[', $.E, ']'),
+      // seq('(', $.E, ')'),
+      // seq('{', optional($.args), $.E, '}'),
       $.N
     ),
+    V: $ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
+    A: $ => token(choice('/', '\\', "'")),
     N: $ => choice(
       $.empty, $.nil, $.infinity,
-      int, decimal, hexadecimal, standard_form,
-      name,
+      $.int, $.decimal, $.hexadecimal, $.standard_form,
+      $.name,
       $.string,
-      $.lambda,
-      $.cond,
     ),
-    empty: _ => /(\s*)/,
+    empty: _ => /\(\s*\)/,
     nil: _ => /0n/i,
     infinity: _ => /0w/i,
-    monadic_expr: $ => seq(repeat($.monadic), $.primary),
-    assign: $ => prec(1, seq(name, ':', $.E)),
-    primary: $ => choice( $.array, $.atom, $.group ),
-    array: $ => prec(3, seq('(', $.body, ')')),
-    group: $ => prec(2, seq('(', $.E, ')')),
-    diadic: _ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
-    monadic: _ => choice('+', '-', '!', '~', 'abs'),
-    adverb: $ => choice('/', '\\', "'"),
-    string: _ => token(seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"')),
-    lambda: $ => seq('{', optional(seq($.args, optional(';'))), optional($.E), '}'),
-    args: _ => seq('[', name, repeat(seq(';', name)), ']')
+    diadic: _ => /[:+\-*%!&|<>=~,^#_$?@.;]|::/,
+    monadic: _ => token(choice(':', '+', '-', '!', '~', '$', '|', '=', '*', '%', '@', '?', 'abs')),
+    string: _ => seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'),
+    args: $ => seq('[', $.name, repeat(seq(';', $.name)), ']'),
+    int: _ => /\d+/,
+    decimal: _ => /\d+\.\d+/,
+    hexadecimal: _ => /0x[\da-f]+/i,
+    standard_form: _ => /\d+e-?\d+/,
+    name: _ => /[\W_π][\w_π]*/,
+    comment: _ => choice(
+      /\/.*\n/,
+    ),
   }
 });

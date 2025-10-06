@@ -13,3 +13,6 @@ A tree-sitter grammer for the Goal array programming language.
   ```
   g <file.goal> && echo "OK" || echo "ERROR"
   ```
+
+## Open Questions
+- How to implement keyword monadic verbs
