@@ -5,14 +5,14 @@ export default grammar({
   extras: $ => [/[\t ]+/],
   rules: {
     S: $ => optional($.E),
-    E: $ => repeat1(choice($.line_comment, $.e, token('\n'))),
+    E: $ => repeat1(choice($.e, $.line_comment, token('\n'))),
     e: $ => choice($.nve, $.te, seq('[', optional($.E), ']'), $.t),
     nve: $ => prec.right(seq($.n, $.v, optional($.e))),
     te: $ => prec.right(seq($.t, $.e)),
-    t: $ => prec.right(choice( $.n, $.v )),
-    v: $ => prec.left(choice( $.V, $.a, $.A )),
-    n: $ => choice( $.block, $.strand, $.N ),
-    N: $ => choice( $.atom, $.group, $.lambda ),
+    t: $ => prec.right(choice($.n, $.v)),
+    v: $ => prec.left(choice($.V, $.a, $.A)),
+    n: $ => choice($.block, $.strand, $.N),
+    N: $ => choice($.atom, $.group, $.lambda),
     V: _ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
     A: _ => token(choice('/', '\\', "'")),
     a: $ => seq($.v, token.immediate(choice('/', '\\', "'"))),
@@ -22,7 +22,6 @@ export default grammar({
     group: $ => seq('(', optional($.E), ')'),
     lambda: $ => seq('{', optional($.args), optional($.E), '}'),
     args: $ => seq('[', $.name, repeat(seq(';', $.name)), ']'),
-
     nil: _ => /0n/i,
     infinity: _ => /0w/i,
     string: _ => seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'),
@@ -33,7 +32,6 @@ export default grammar({
     exponential: _ => token(/-?\d+e[+-]?\d+/i),
     name: _ => /[a-zA-Z_π][\w_π]*/,
     time: _ => token(/-?(\d+(?:\.\d+)?(?:e[+-]?\d+)?[hms])+/),
-
     line_comment: _ => /\/[^\n]*/,
     // block_comment: null, // start with a single slash on a line and end with only a single bashslash on line
     // inline_comment: null, // comment that starts after whitespace and a slash
