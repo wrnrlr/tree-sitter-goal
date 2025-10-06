@@ -1,0 +1,6 @@
+abc2:{[a;b;c];a+b+c}
+abc1:{[a;b;c] a+b+c}
+abc0:{[a;b;c]a+b+c}
+abc3:{
+ [x;y]
+}
