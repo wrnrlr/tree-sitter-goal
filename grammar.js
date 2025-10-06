@@ -16,7 +16,7 @@ export default grammar({
     V: _ => /[:+\-*%!&|<>=~,^#_$?@.;]/,
     A: _ => token(choice('/', '\\', "'")),
     a: $ => seq($.v, token.immediate(choice('/', '\\', "'"))),
-    atom: $ => choice( $.nil, $.infinity, $.int, $.number, $.hex, $.exponential, $.time, $.name, $.string ),
+    atom: $ => choice( $.nil, $.infinity, $.binairy, $.int, $.number, $.hex, $.exponential, $.time, $.name, $.string ),
     strand: $ => seq( $.N, repeat1($.N) ),
     block: $ => seq($.t, token.immediate('['), optional($.E), ']'),
     group: $ => seq('(', optional($.E), ')'),
@@ -25,7 +25,7 @@ export default grammar({
     nil: _ => /0n/i,
     infinity: _ => /0w/i,
     string: _ => seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'),
-    // binairy
+    binairy: _ => token(/0b[01]+/),
     int: _ => token(/-?\d+/),
     number: _ => token(/-?\d+\.\d+/),
     hex: _ => token(/-?0x[\da-f]+/i),
