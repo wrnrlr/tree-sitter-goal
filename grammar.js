@@ -1,16 +1,12 @@
 export default grammar({
   name: 'goal',
-  supertypes: $ => [],
-  conflicts: $ => [
-    // [$.nve, $.te],
-    // [$.E]
-  ],
+  supertypes: $ => [$.e],
+  conflicts: $ => [],
   rules: {
-    E: $ => prec.left(repeatSep(choice(
+    E: $ => repeatSep(choice(
       $.comment,
-      prec.right(repeatSep($.E, ';')),
-      $.e
-    ), '\n')),
+      seq( $.e, repeat(seq(';', $.e)) )
+    ), '\n'),
     e: $ => choice(
       $.nve,
       $.te,
@@ -52,7 +48,7 @@ export default grammar({
     decimal: _ => /\d+\.\d+/,
     hexadecimal: _ => /0x[\da-f]+/i,
     standard_form: _ => /\d+e-?\d+/,
-    name: _ => /[\W_π][\w_π]*/,
+    name: _ => /[a-zA-Z_π][\w_π]*/,
     comment: _ => /\/[^\n]*/,
   }
 });
