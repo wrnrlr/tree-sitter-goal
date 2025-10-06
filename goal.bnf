@@ -15,7 +15,6 @@ N, V, A → terminals (tokens):
 N → a name or noun (atomic literal, variable, etc.).
 V → a verb (function, operator).
 A → adverb (modifier of a verb).
-ε means “empty” (no symbol).
 [ ], ( ), { }, ; are syntactic constructs in the language itself.
 
 ## 2. Productions
@@ -47,6 +46,3 @@ This is the tiny formal grammar that defines the core expression structure in K:
 - Square brackets `[]` are indexing / application.
 - Verbs (`V`) can be modified by adverbs (`A`) to create new verbs.
 - Expressions are fundamentally sequences of nouns and verbs (the array language “chain” style).
-
-So in plain words:
-This grammar says that a K expression is a sequence of noun/verb chains, possibly grouped, possibly separated by semicolons. Verbs may be atomic or modified by adverbs. Nouns may be atoms, grouped expressions, blocks, or indexed terms.
