@@ -26,17 +26,18 @@ a: (1 2
 export default grammar({
   name: 'goal',
   supertypes: $ => [$.atom],
-  conflicts: $ => [[$.n, $.strand], [$.strand], [$.atom, $.args]],
+  conflicts: $ => [[$.n, $.strand], [$.strand], [$.atom, $.args], [$.e, $.te]],
   extras: $ => [/[\t ]+/],
   rules: {
     source_file: $ => optional($.E),
     // E: E ; E | e
-    E: $ => seq(
-      optional(choice('\n', ';')),
-      choice($.comment, $.e),
-      repeat(seq(choice('\n', ';'), choice($.comment, $.e))),
-      optional(choice('\n', ';'))
-    ),
+    // E: $ => seq(
+    //   optional(choice('\n', ';')),
+    //   choice($.comment, $.e),
+    //   repeat(seq(choice('\n', ';'), choice($.comment, $.e))),
+    //   optional(choice('\n', ';'))
+    // ),
+    E: $ => repeat1(choice($.comment, $.e, token('\n'))),
     e: $ => choice($.nve, $.te, seq('[', optional($.E), ']'), $.t),
     nve: $ => prec.right(seq($.n, $.v, optional($.e))),
     te: $ => prec.right(seq($.t, $.e)),
@@ -73,10 +74,8 @@ export default grammar({
       $.name,
       $.string,
     ),
-
     nil: _ => /0n/i,
     infinity: _ => /0w/i,
-
     string: _ => seq('"', repeat(choice(/[^"\\]/, seq('\\', /./))), '"'),
     args: $ => seq('[', $.name, repeat(seq(';', $.name)), ']'),
     int: _ => token(/-?\d+/),
