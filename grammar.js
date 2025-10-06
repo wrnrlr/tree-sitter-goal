@@ -6,15 +6,15 @@ export default grammar({
     E: $ => repeat(seq(choice(
       $.comment,
       // seq($.E, /\s*;\s/, $.E),
-      $.n
-    ), /\n/)),
+      $.e
+    ), choice('\n', ';'))),
     e: $ => choice(
-      seq($.n, /\s*/, $.v, /\s*/, $.e),
-      seq($.t, /\s*/, $.e),
-      $.empty
+      prec(2, seq($.n, $.v, $.e)),
+      prec(1, seq($.t, $.e)),
+      $.N
     ),
     t: $ => choice(
-      // $.n,
+      $.n,
       $.v
     ),
     v: $ => choice(
@@ -24,7 +24,7 @@ export default grammar({
     n: $ => choice(
       // seq($.t, '[', $.E, ']'),
       // seq('?[', $.E, ']'),
-      // seq('(', $.E, ')'),
+      seq(/\(/, $.E, /\)/),
       // seq('{', optional($.args), $.E, '}'),
       $.N
     ),
@@ -49,7 +49,7 @@ export default grammar({
     standard_form: _ => /\d+e-?\d+/,
     name: _ => /[\W_π][\w_π]*/,
     comment: _ => choice(
-      /\/.*\n/,
+      /\/[^\n]*/,
     ),
   }
 });
