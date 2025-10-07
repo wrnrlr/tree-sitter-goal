@@ -1,2 +1,1 @@
 import"./fmt.goal"
-pp: fmt.tbl[;5;8;"%.1f"]
