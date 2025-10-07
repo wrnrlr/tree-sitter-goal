@@ -38,3 +38,6 @@ dist/
 *.o
 
 src/
+
+.DS_Store
+testdata/

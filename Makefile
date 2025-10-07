@@ -105,6 +105,7 @@ uninstall:
 
 clean:
 	$(RM) $(OBJS) $(LANGUAGE_NAME).pc $(LANGUAGE_NAME).dylib lib$(LANGUAGE_NAME).a lib$(LANGUAGE_NAME).$(SOEXT)
+	rm -rf prebuilds build
 
 test:
 	$(TS) test
