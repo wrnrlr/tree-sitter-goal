@@ -1,4 +1,4 @@
-export default grammar({
+module.exports = grammar({
   name: 'goal',
   supertypes: $ => [$.atom, $.N, $.t],
   conflicts: $ => [[$.n, $.strand], [$.strand], [$.atom, $.args], [$.e, $.te]],
