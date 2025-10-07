@@ -5,6 +5,6 @@
   },
   {
     "label": "Test",
-    "command": "tree-sitter generate && make && tree-sitter parse test/*.goal"
+    "command": "tree-sitter generate && make && tree-sitter parse test/_.goal"
   }
 ]

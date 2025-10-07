@@ -11,3 +11,24 @@ a+b
 a*b
 csv "test"
 (+-) 3
+
+(+ - ) 3
+( - + / : ) 3 2
+f : - ; ( + f ) 3
+csv "a" 2 3
+csv ,"a" 2 3
+"v" $ "2"
+"v" $ "2.5"
+a:42; rt.get "!"
+rt.time [ + / ; , !10 ;10 ]
+
+()
+0i 0n 0w
+(1;2;3)
+:42
++:
+qq/string/
+rq`raw`
+rx/regexp/
+a..b
+x::global
