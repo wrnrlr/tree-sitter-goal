@@ -19,7 +19,7 @@
     "queries/*",
     "src/**"
   ],
-  "author": "",
+  "author": "werner",
   "license": "MIT",
   "scripts": {
     "test": "tree-sitter test",

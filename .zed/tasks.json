@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Build & Run",
+    "command": "tree-sitter generate && make && tree-sitter parse test/*.goal"
+  },
+  {
+    "label": "Test",
+    "command": "tree-sitter generate && make && tree-sitter parse test/*.goal"
+  }
+]
