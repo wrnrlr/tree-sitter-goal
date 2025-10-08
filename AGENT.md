@@ -37,7 +37,3 @@ Check test files in `test/`, add if something is untested.
 Run each test file seperatly and check if the output is the Concrete Syntax Tree expected.
 Use a wildcard `*` to test all files, good for final check but output too large to read.
 Test common subsections of syntax in the underscore file `test/_.goal`.
-
-## Tasks
-
-improve the grammer step by step
