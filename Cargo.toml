@@ -8,7 +8,7 @@ readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "goal"]
 categories = ["parsing", "text-editors"]
 repository = "https://github.com/wrnrlr/tree-sitter-goal"
-edition = "2025"
+edition = "2024"
 autoexamples = false
 
 build = "bindings/rust/build.rs"

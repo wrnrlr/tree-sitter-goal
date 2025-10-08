@@ -4,7 +4,3 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for the [Goal](https://a
 
 ## Editor Integration
 - Zed: [zed-goal](https://github.com/wrnrlr/zed-goal)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
