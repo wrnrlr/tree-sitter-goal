@@ -4,3 +4,13 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for the [Goal](https://a
 
 ## Editor Integration
 - Zed: [zed-goal](https://github.com/wrnrlr/zed-goal)
+
+## Dev Tips
+
+Generate code from grammar and make project:
+
+    tree-sitter generate && make
+
+Test parser against file:
+
+    tree-sitter parse test/unlist.test
