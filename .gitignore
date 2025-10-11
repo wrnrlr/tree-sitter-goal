@@ -37,7 +37,5 @@ dist/
 *.obj
 *.o
 
-src/*
-
 .DS_Store
 testdata/

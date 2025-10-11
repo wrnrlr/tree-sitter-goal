@@ -1,0 +1,494 @@
+[
+  {
+    "type": "N",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "atom",
+        "named": true
+      },
+      {
+        "type": "group",
+        "named": true
+      },
+      {
+        "type": "lambda",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "atom",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "binairy",
+        "named": true
+      },
+      {
+        "type": "duration",
+        "named": true
+      },
+      {
+        "type": "exponential",
+        "named": true
+      },
+      {
+        "type": "hex",
+        "named": true
+      },
+      {
+        "type": "infinity",
+        "named": true
+      },
+      {
+        "type": "int",
+        "named": true
+      },
+      {
+        "type": "name",
+        "named": true
+      },
+      {
+        "type": "nil",
+        "named": true
+      },
+      {
+        "type": "number",
+        "named": true
+      },
+      {
+        "type": "qq",
+        "named": true
+      },
+      {
+        "type": "rq",
+        "named": true
+      },
+      {
+        "type": "rx",
+        "named": true
+      },
+      {
+        "type": "string",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "e",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "block",
+        "named": true
+      },
+      {
+        "type": "nve",
+        "named": true
+      },
+      {
+        "type": "t",
+        "named": true
+      },
+      {
+        "type": "te",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "t",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "n",
+        "named": true
+      },
+      {
+        "type": "v",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "E",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "e",
+          "named": true
+        },
+        {
+          "type": "line_comment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "S",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "E",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "a",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "v",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "apply",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "E",
+          "named": true
+        },
+        {
+          "type": "t",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "args",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "E",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "group",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "E",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "lambda",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "E",
+          "named": true
+        },
+        {
+          "type": "args",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "n",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "N",
+          "named": true
+        },
+        {
+          "type": "apply",
+          "named": true
+        },
+        {
+          "type": "strand",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "nve",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "e",
+          "named": true
+        },
+        {
+          "type": "n",
+          "named": true
+        },
+        {
+          "type": "v",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "qq",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "rq",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "rx",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "strand",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "N",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "te",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "e",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "v",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "A",
+          "named": true
+        },
+        {
+          "type": "V",
+          "named": true
+        },
+        {
+          "type": "a",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "\n",
+    "named": false
+  },
+  {
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": "#",
+    "named": false
+  },
+  {
+    "type": "%",
+    "named": false
+  },
+  {
+    "type": "'",
+    "named": false
+  },
+  {
+    "type": "(",
+    "named": false
+  },
+  {
+    "type": ")",
+    "named": false
+  },
+  {
+    "type": "/",
+    "named": false
+  },
+  {
+    "type": ";",
+    "named": false
+  },
+  {
+    "type": "A",
+    "named": true
+  },
+  {
+    "type": "V",
+    "named": true
+  },
+  {
+    "type": "[",
+    "named": false
+  },
+  {
+    "type": "\\",
+    "named": false
+  },
+  {
+    "type": "]",
+    "named": false
+  },
+  {
+    "type": "`",
+    "named": false
+  },
+  {
+    "type": "binairy",
+    "named": true
+  },
+  {
+    "type": "block_comment",
+    "named": true
+  },
+  {
+    "type": "duration",
+    "named": true
+  },
+  {
+    "type": "exponential",
+    "named": true
+  },
+  {
+    "type": "hex",
+    "named": true
+  },
+  {
+    "type": "infinity",
+    "named": true
+  },
+  {
+    "type": "inline_comment",
+    "named": true
+  },
+  {
+    "type": "int",
+    "named": true
+  },
+  {
+    "type": "line_comment",
+    "named": true
+  },
+  {
+    "type": "name",
+    "named": true
+  },
+  {
+    "type": "nil",
+    "named": true
+  },
+  {
+    "type": "number",
+    "named": true
+  },
+  {
+    "type": "qq",
+    "named": false
+  },
+  {
+    "type": "rq",
+    "named": false
+  },
+  {
+    "type": "rx",
+    "named": false
+  },
+  {
+    "type": "{",
+    "named": false
+  },
+  {
+    "type": "}",
+    "named": false
+  }
+]
