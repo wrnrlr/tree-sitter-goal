@@ -15,7 +15,7 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for the [Goal](https://a
 - Run tests: `tree-sitter test`
 - Parse file: `tree-sitter parse `
 
-## Release Instructiond
+## Release Instructions
 - Bump version in `package.json` and `Cargo.toml`
 - Commit latest changes: `git commit -m "Prepare release"`
 - Set git tag: `git tag v1.0.1`
