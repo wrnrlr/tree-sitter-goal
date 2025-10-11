@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-goal",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Goal grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
@@ -18,7 +18,7 @@
     "queries/*",
     "src/**"
   ],
-  "author": "werner",
+  "author": "Werner Laurensse",
   "license": "MIT",
   "scripts": {
     "test": "tree-sitter test",
