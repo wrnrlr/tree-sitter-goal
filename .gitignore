@@ -8,18 +8,9 @@ prebuilds/
 node_modules/
 *.tgz
 
-# Swift artifacts
-.build/
-
 # Go artifacts
 go.sum
 _obj/
-
-# Python artifacts
-.venv/
-dist/
-*.egg-info
-*.whl
 
 # C artifacts
 *.a
@@ -29,13 +20,9 @@ dist/
 *.dll
 *.pc
 
-# Example dirs
-/examples/*/
-
 # Grammar volatiles
 *.wasm
 *.obj
 *.o
 
 .DS_Store
-testdata/
