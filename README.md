@@ -16,10 +16,10 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for the [Goal](https://a
 - Parse file: `tree-sitter parse `
 
 ## Release Instructions
-- Bump version in `package.json` and `Cargo.toml`
-- Commit latest changes: `git commit -m "Prepare release"`
-- Set git tag: `git tag v1.0.1`
-- Push changes: `git push origin v1.0.1`
+Bump version in `package.json` and `Cargo.toml`.
 
-
-- Publish: `npm publish && cargo publish --allow-dirty`
+```bash
+git commit -m "Prepare release"
+git tag v0.0.5
+git push origin v0.0.5
+```
