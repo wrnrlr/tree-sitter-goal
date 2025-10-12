@@ -25,7 +25,7 @@ BRANCH=$(git branch --show-current)
 
 # Commit changes
 git add package.json Cargo.toml tree-sitter.json
-git commit -m "Release v$NEW_VERSION"
+git commit -am "Release v$NEW_VERSION"
 
 # Tag
 git tag v$NEW_VERSION
