@@ -19,8 +19,8 @@ A [Tree-sitter](https://tree-sitter.github.io/) grammar for the [Goal](https://a
 Bump version in `package.json` and `Cargo.toml`.
 
 ```bash
-git commit -m v0.0.6
-git tag v0.0.6
+git commit -am v0.0.7
+git tag v0.0.7
 git push origin main
-git push origin v0.0.6
+git push origin v0.0.7
 ```
