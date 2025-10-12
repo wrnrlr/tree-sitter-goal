@@ -12,6 +12,8 @@ jobs:
       - run: npm install
       - run: npx tree-sitter generate
       - run: npx tree-sitter test
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
       - run: npx prebuildify --napi --strip
       - name: Publish
         run: |
@@ -19,3 +21,6 @@ jobs:
           npm publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: cargo publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_TOKEN }}
