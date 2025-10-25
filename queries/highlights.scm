@@ -37,5 +37,5 @@
 (lambda) @function
 
 ; Strand and expressions
-(strand) @variable ; or leave as is, since strands are lists
-(e) @expression ; if supported, but usually not highlighted
+; (strand) @variable ; or leave as is, since strands are lists
+; (e) @expression ; if supported, but usually not highlighted

@@ -13,4 +13,10 @@ all: generate test
 clean:
 	rm -rf src/ build/
 
-.PHONY: all generate test clean
+wasm: generate
+	emcc -o tree-sitter-goal.wasm src/parser.c -I src --no-entry -s WASM=1 -s SIDE_MODULE=1 -Os
+
+play: wasm
+	$(TS) playground
+
+.PHONY: all generate test clean wasm playground
