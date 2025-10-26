@@ -21,7 +21,7 @@
 ; Comments
 (inline_comment) @comment
 (block_comment) @comment
-(line_comment) @comment
+; (line_comment) @comment
 
 ; Punctuation for blocks and groups
 ("{" "}" "[" "]" "(" ")") @punctuation.bracket

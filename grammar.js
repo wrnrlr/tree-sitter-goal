@@ -40,6 +40,6 @@ module.exports = grammar({
     duration: _ => token(/-?(\d+(?:\.\d+)?(?:e[+-]?\d+)?[hms])+/),
     inline_comment: _ => token(/[\t ]+\/[^\n]*/),
     block_comment: _ => token(/\/(?:\n.*)*?\n\\/),
-    line_comment: _ => /\/[^\n]*/,
+    // line_comment: _ => /\/[^\n]*/,
   }
 })
