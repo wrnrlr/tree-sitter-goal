@@ -1,4 +1,3 @@
-; Strings
 (string) @string
 (qq) @string
 (rq) @string
@@ -14,22 +13,21 @@
 (nil) @constant
 
 (name) @variable
+(lambda) @function
+(args) @punctuation.delimiter
+(args (name) @variable.parameter)
 
 (V) @operator
 (A) @punctuation.special
 (a) @punctuation.special
 
-; Comments
 (inline_comment) @comment
 (block_comment) @comment
 ; (line_comment) @comment
 
-; Punctuation for blocks and groups
 ("{" "}" "[" "]" "(" ")") @punctuation.bracket
 (";") @punctuation.delimiter
 
-; (block) @function
-; (lambda) @function
 
 ; Strand and expressions
 ; (strand) @variable ; or leave as is, since strands are lists
