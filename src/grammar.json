@@ -1024,10 +1024,6 @@
         "type": "PATTERN",
         "value": "\\/(?:\\n.*)*?\\n\\\\"
       }
-    },
-    "line_comment": {
-      "type": "PATTERN",
-      "value": "\\/[^\\n]*"
     }
   },
   "extras": [

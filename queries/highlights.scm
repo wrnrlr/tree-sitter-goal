@@ -1,5 +1,9 @@
 ; Strings
 (string) @string
+(qq) @string
+(rq) @string
+(rx) @string
+
 
 ; Numbers and literals
 (int) @number
