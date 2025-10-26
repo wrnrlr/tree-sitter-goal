@@ -8,7 +8,7 @@ generate:
 build:
 	$(TS) build
 
-test:
+test: generate
 	$(TS) test
 
 all: generate build test

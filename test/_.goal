@@ -33,3 +33,4 @@ rq`raw`
 rx/regexp/
 a..b
 x::global
+{[a]a}

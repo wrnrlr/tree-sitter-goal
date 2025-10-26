@@ -24,25 +24,11 @@ Test common subsections of syntax in the underscore file `test/_.goal`.
 ## Extra info
 
 ### Dyadic expression
-Simple dyadic expressions with a binairy operator fail to parse:
+Simple dyadic expressions with a binairy operator:
 
 ```
 1+2
 ```
-
-results in
-```
-S [0, 0] - [1, 0]
-  E [0, 0] - [1, 0]
-    n [0, 0] - [0, 1]
-      int [0, 0] - [0, 1]
-    ERROR [0, 1] - [0, 2]
-      ERROR [0, 1] - [0, 2]
-    n [0, 2] - [0, 3]
-      int [0, 2] - [0, 3]
-```
-
-While I would excpect an expresiion with a noun (int) verb and noun (int).
 
 ### Assignment
 
@@ -50,20 +36,6 @@ While I would excpect an expresiion with a noun (int) verb and noun (int).
 a:1
 ```
 
-results in:
-
-```
-S [0, 0] - [1, 0]
-  E [0, 0] - [1, 0]
-    n [0, 0] - [0, 1]
-      name [0, 0] - [0, 1]
-    ERROR [0, 1] - [0, 2]
-      ERROR [0, 1] - [0, 2]
-    n [0, 2] - [0, 3]
-      int [0, 2] - [0, 3]
-```
-
-This is just another expression
 
 ### Op Assignment
 
@@ -90,9 +62,7 @@ a[2]+:1
 
 ### Fold
 
-The fold adverb `/` is currenly parsed as a comment.
-
-Example of a fold of a list of 10 numbers `!10` folded `\` over the addiotn operator `+`
+Example of a fold of a list of 10 numbers `!10` folded `\` over the addition operator `+`
 
 ```
 +/!10
@@ -143,3 +113,65 @@ Apply the number 2 to the lambda `{x+1}`
 ```
 {x+1} 2
 ```
+
+## Fix this
+
+The lambda argument parsing is broken, the optional first set of square brackets should be the `args` argument names of the function.
+
+Even a simple argument is parsed wrong, the parser currenlty thinks the args is a block:
+```
+{[a]a}
+```
+
+```
+(S [0, 0] - [0, 6]
+  (E [0, 0] - [0, 6]
+    (n [0, 0] - [0, 6]
+      (lambda [0, 0] - [0, 6]
+        (E [0, 1] - [0, 5]
+          (block [0, 1] - [0, 4]
+            (E [0, 2] - [0, 3]
+              (n [0, 2] - [0, 3]
+                (name [0, 2] - [0, 3]))))
+          (n [0, 4] - [0, 5]
+            (name [0, 4] - [0, 5])))))))
+```
+
+Here a more complex example
+```
+h:{[a;b;c] a+b+b}
+```
+
+```
+(S [0, 0] - [0, 17]
+  (E [0, 0] - [0, 17]
+    (nve [0, 0] - [0, 17]
+      (n [0, 0] - [0, 1]
+        (name [0, 0] - [0, 1]))
+      (v [0, 1] - [0, 2]
+        (V [0, 1] - [0, 2]))
+      (n [0, 2] - [0, 17]
+        (lambda [0, 2] - [0, 17]
+          (E [0, 3] - [0, 16]
+            (block [0, 3] - [0, 10]
+              (E [0, 4] - [0, 9]
+                (n [0, 4] - [0, 5]
+                  (name [0, 4] - [0, 5]))
+                (n [0, 6] - [0, 7]
+                  (name [0, 6] - [0, 7]))
+                (n [0, 8] - [0, 9]
+                  (name [0, 8] - [0, 9]))))
+            (nve [0, 10] - [0, 16]
+              (n [0, 10] - [0, 12]
+                (name [0, 10] - [0, 12]))
+              (v [0, 12] - [0, 13]
+                (V [0, 12] - [0, 13]))
+              (nve [0, 13] - [0, 16]
+                (n [0, 13] - [0, 14]
+                  (name [0, 13] - [0, 14]))
+                (v [0, 14] - [0, 15]
+                  (V [0, 14] - [0, 15]))
+                (n [0, 15] - [0, 16]
+                  (name [0, 15] - [0, 16]))))))))))
+```
+ Empty lambda like this `{}` are not allowed in the syntax.

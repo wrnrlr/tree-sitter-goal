@@ -2,10 +2,8 @@
 (string) @string
 (qq) @string
 (rq) @string
-(rx) @string
+(rx) @string.regex
 
-
-; Numbers and literals
 (int) @number
 (number) @number
 (hex) @number
@@ -15,12 +13,11 @@
 (infinity) @constant
 (nil) @constant
 
-; Identifiers
 (name) @variable
 
-; Operators and special characters
 (V) @operator
-(A) @operator
+(A) @punctuation.special
+(a) @punctuation.special
 
 ; Comments
 (inline_comment) @comment
@@ -29,16 +26,10 @@
 
 ; Punctuation for blocks and groups
 ("{" "}" "[" "]" "(" ")") @punctuation.bracket
+(";") @punctuation.delimiter
 
-; Adverbs and modifiers
-(a) @operator
-
-; Assignments or special constructs
-; Add if needed for adverbs or dyads
-
-; Function-like constructs (blocks, lambdas)
-(block) @function
-(lambda) @function
+; (block) @function
+; (lambda) @function
 
 ; Strand and expressions
 ; (strand) @variable ; or leave as is, since strands are lists
