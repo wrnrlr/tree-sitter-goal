@@ -3,7 +3,7 @@ module.exports = grammar({
   name: 'goal',
   supertypes: $ => [$.atom, $.N, $.t, $.e],
   conflicts: $ => [[$.n, $.strand], [$.strand], [$.atom, $.args], [$.e, $.t], [$.v, $.n], [$.nve], [$.v, $.a]],
-  extras: $ => [/[\t ]+/, $.inline_comment, $.block_comment],
+  extras: $ => [/[\t ]+/, $.inline_comment, $.block_comment, $.line_comment],
   rules: {
     S: $ => optional($.E),
     E: $ => repeat1(choice($.e, token('\n'), token(';'))),
@@ -40,6 +40,6 @@ module.exports = grammar({
     duration: _ => token(/-?(\d+(?:\.\d+)?(?:e[+-]?\d+)?[hms])+/),
     inline_comment: _ => token(/[\t ]+\/[^\n]*/),
     block_comment: _ => token(/\/(?:\n.*)*?\n\\/),
-    // line_comment: _ => /\/[^\n]*/,
+    line_comment: _ => /\/[^\n]*/,
   }
 })

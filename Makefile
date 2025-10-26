@@ -5,18 +5,18 @@ TS ?= tree-sitter
 generate:
 	$(TS) generate
 
-build:
-	$(TS) build
-
 test: generate
 	$(TS) test
+
+build:
+	$(TS) build
 
 all: generate build test
 
 clean:
 	rm -rf src/ build/
 
-wasm: generate build
+wasm: generate build test
 	$(TS) build --wasm
 
 play: wasm
