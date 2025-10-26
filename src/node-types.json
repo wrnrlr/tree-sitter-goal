@@ -84,15 +84,23 @@
         "named": true
       },
       {
+        "type": "implicit",
+        "named": true
+      },
+      {
+        "type": "n",
+        "named": true
+      },
+      {
         "type": "nve",
         "named": true
       },
       {
-        "type": "t",
+        "type": "te",
         "named": true
       },
       {
-        "type": "te",
+        "type": "v",
         "named": true
       }
     ]
@@ -122,10 +130,6 @@
         {
           "type": "e",
           "named": true
-        },
-        {
-          "type": "line_comment",
-          "named": true
         }
       ]
     }
@@ -151,11 +155,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "v",
+          "type": "A",
+          "named": true
+        },
+        {
+          "type": "V",
           "named": true
         }
       ]
@@ -226,6 +234,25 @@
     }
   },
   {
+    "type": "implicit",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "e",
+          "named": true
+        },
+        {
+          "type": "lambda",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "lambda",
     "named": true,
     "fields": {},
@@ -257,6 +284,10 @@
           "named": true
         },
         {
+          "type": "a",
+          "named": true
+        },
+        {
           "type": "apply",
           "named": true
         },
@@ -277,14 +308,6 @@
       "types": [
         {
           "type": "e",
-          "named": true
-        },
-        {
-          "type": "n",
-          "named": true
-        },
-        {
-          "type": "v",
           "named": true
         }
       ]
@@ -335,6 +358,10 @@
       "types": [
         {
           "type": "e",
+          "named": true
+        },
+        {
+          "type": "t",
           "named": true
         }
       ]
@@ -429,7 +456,8 @@
   },
   {
     "type": "block_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "duration",
@@ -449,14 +477,11 @@
   },
   {
     "type": "inline_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "int",
-    "named": true
-  },
-  {
-    "type": "line_comment",
     "named": true
   },
   {

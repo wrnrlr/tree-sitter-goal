@@ -5,18 +5,21 @@ TS ?= tree-sitter
 generate:
 	$(TS) generate
 
+build:
+	$(TS) build
+
 test:
 	$(TS) test
 
-all: generate test
+all: generate build test
 
 clean:
 	rm -rf src/ build/
 
-wasm: generate
-	emcc -o tree-sitter-goal.wasm src/parser.c -I src --no-entry -s WASM=1 -s SIDE_MODULE=1 -Os
+wasm: generate build
+	$(TS) build --wasm
 
 play: wasm
 	$(TS) playground
 
-.PHONY: all generate test clean wasm playground
+.PHONY: all generate build test clean wasm playground

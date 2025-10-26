@@ -24,10 +24,6 @@
             "name": "e"
           },
           {
-            "type": "SYMBOL",
-            "name": "line_comment"
-          },
-          {
             "type": "TOKEN",
             "content": {
               "type": "STRING",
@@ -45,29 +41,41 @@
       }
     },
     "e": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "nve"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "te"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "block"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "t"
-        }
-      ]
-    },
-    "nve": {
       "type": "PREC_RIGHT",
       "value": 0,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "nve"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "block"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "v"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "n"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "te"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "implicit"
+          }
+        ]
+      }
+    },
+    "nve": {
+      "type": "PREC",
+      "value": 1,
       "content": {
         "type": "SEQ",
         "members": [
@@ -129,25 +137,21 @@
       }
     },
     "v": {
-      "type": "PREC_LEFT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "V"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "a"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "A"
-          }
-        ]
-      }
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "a"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "V"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "A"
+        }
+      ]
     },
     "n": {
       "type": "CHOICE",
@@ -163,6 +167,10 @@
         {
           "type": "SYMBOL",
           "name": "N"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "a"
         }
       ]
     },
@@ -216,29 +224,30 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "v"
+          "name": "V"
         },
         {
-          "type": "IMMEDIATE_TOKEN",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "/"
-              },
-              {
-                "type": "STRING",
-                "value": "\\"
-              },
-              {
-                "type": "STRING",
-                "value": "'"
-              }
-            ]
-          }
+          "type": "SYMBOL",
+          "name": "A"
         }
       ]
+    },
+    "implicit": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "lambda"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "e"
+          }
+        ]
+      }
     },
     "atom": {
       "type": "CHOICE",
@@ -471,8 +480,7 @@
     },
     "infinity": {
       "type": "PATTERN",
-      "value": "-?0w",
-      "flags": "i"
+      "value": "-?0w"
     },
     "string": {
       "type": "SEQ",
@@ -1049,12 +1057,23 @@
       "strand"
     ],
     [
-      "e",
-      "te"
-    ],
-    [
       "atom",
       "args"
+    ],
+    [
+      "e",
+      "t"
+    ],
+    [
+      "v",
+      "n"
+    ],
+    [
+      "nve"
+    ],
+    [
+      "v",
+      "a"
     ]
   ],
   "precedences": [],
@@ -1065,5 +1084,6 @@
     "N",
     "t",
     "e"
-  ]
+  ],
+  "reserved": {}
 }
