@@ -2,7 +2,7 @@
 name = "tree-sitter-goal"
 description = "Goal grammar for tree-sitter"
 authors = ["Werner Laurensse"]
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "goal"]
