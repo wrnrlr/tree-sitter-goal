@@ -1,0 +1,100 @@
+==================
+lambda without args
+==================
+{x+1}
+---
+(S
+  (E
+    (n
+      (lambda
+        (E
+          (nve
+            (n
+              (name))
+            (v
+              (V))
+            (n
+              (int))))))))
+
+==================
+lambda with single arg
+==================
+{[a]a}
+---
+(S
+  (E
+    (n
+      (lambda
+        (args
+          (name))
+        (E
+          (block
+            (E
+              (n
+                (name))))
+          (n
+            (name)))))))
+
+==================
+lambda with multiple args
+==================
+{[a;b;c] a+b+c}
+---
+(S
+  (E
+    (n
+      (lambda
+        (args
+          (name)
+          (name)
+          (name))
+        (E
+          (block
+            (E
+              (n
+                (name))
+              (n
+                (name))
+              (n
+                (name))))
+          (nve
+            (n
+              (name))
+            (v
+              (V))
+            (nve
+              (n
+                (name))
+              (v
+                (V))
+              (n
+                (name)))))))))
+
+==================
+lambda with args and block
+==================
+{[x;y]
+ x+y
+}
+---
+(S
+  (E
+    (n
+      (lambda
+        (args
+          (name)
+          (name))
+        (E
+          (block
+            (E
+              (n
+                (name))
+              (n
+                (name))))
+          (nve
+            (n
+              (name))
+            (v
+              (V))
+            (n
+              (name))))))))
